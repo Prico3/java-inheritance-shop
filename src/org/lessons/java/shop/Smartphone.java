@@ -1,28 +1,25 @@
 package org.lessons.java.shop;
 
-public class Smartphone extends Prodotto{
+import java.math.BigDecimal;
 
-    //ATTRIBUTI
-    private int codiceIMEI;
+public class Smartphone extends Prodotto {
+
+    private String imei;
     private int memoria;
 
-    //COSTRUTTORE
-
-    public Smartphone(int codice, String nome, String descrizione, int prezzo, double iva, int codiceIMEI, int memoria) {
-        super(codice, nome, descrizione, prezzo, iva);
-        this.codiceIMEI = codiceIMEI;
+    public Smartphone(String nome, String descrizione, BigDecimal prezzo,
+                      BigDecimal iva, String imei, int memoria) {
+        super(nome, descrizione, prezzo, iva);
+        this.imei = imei;
         this.memoria = memoria;
     }
 
-
-    //GETTER E SETTER
-
-    public int getCodiceIMEI() {
-        return codiceIMEI;
+    public String getImei() {
+        return imei;
     }
 
-    public void setCodiceIMEI(int codiceIMEI) {
-        this.codiceIMEI = codiceIMEI;
+    public void setImei(String imei) {
+        this.imei = imei;
     }
 
     public int getMemoria() {
@@ -33,14 +30,20 @@ public class Smartphone extends Prodotto{
         this.memoria = memoria;
     }
 
-
-    //METODI
-
+    @Override
+    public BigDecimal getPrezzoScontato(boolean ivato) {
+        BigDecimal prezzoDaScontare = ivato ? getPrezzoIvato() : getPrezzo();
+        if (memoria < 32) {
+            return prezzoDaScontare.subtract(prezzoDaScontare.multiply(new BigDecimal("0.05")));
+        }
+        return super.getPrezzoScontato(ivato);
+    }
 
     @Override
     public String toString() {
-        return "Smartphone{" +
-                "codiceIMEI=" + codiceIMEI +
+        return "Smartphone{" + '\'' +
+                super.toString() +
+                "imei='" + imei + '\'' +
                 ", memoria=" + memoria +
                 '}';
     }

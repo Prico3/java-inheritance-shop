@@ -1,24 +1,25 @@
 package org.lessons.java.shop;
 
-public class Televisori extends Prodotto{
-    //ATTRIBUTI
-    private int pollici;
+import java.math.BigDecimal;
+
+public class Televisori extends Prodotto {
+
+    private int dimensioni;
     private boolean smart;
-// COSTRUTTORE
-    public Televisori(int codice, String nome, String descrizione, int prezzo, double iva, int pollici, boolean smart) {
-        super(codice, nome, descrizione, prezzo, iva);
-        this.pollici = pollici;
+
+    public Televisori(String nome, String descrizione, BigDecimal prezzo,
+                      BigDecimal iva, int dimensioni, boolean smart) {
+        super(nome, descrizione, prezzo, iva);
+        this.dimensioni = dimensioni;
         this.smart = smart;
     }
 
-    //GETTER E SETTER
-
-    public int getPollici() {
-        return pollici;
+    public int getDimensioni() {
+        return dimensioni;
     }
 
-    public void setPollici(int pollici) {
-        this.pollici = pollici;
+    public void setDimensioni(int dimensioni) {
+        this.dimensioni = dimensioni;
     }
 
     public boolean isSmart() {
@@ -29,12 +30,20 @@ public class Televisori extends Prodotto{
         this.smart = smart;
     }
 
-    //METODI
+    @Override
+    public BigDecimal getPrezzoScontato(boolean ivato) {
+        BigDecimal prezzoDaScontare = ivato ? getPrezzoIvato() : getPrezzo();
+        if (!smart) {
+            return prezzoDaScontare.subtract(prezzoDaScontare.multiply(new BigDecimal("0.1")));
+        }
+        return super.getPrezzoScontato(ivato);
+    }
 
     @Override
     public String toString() {
-        return "Televisori{" +
-                "pollici=" + pollici +
+        return "Televisore{" +
+                super.toString() + '\'' +
+                "dimensioni=" + dimensioni +
                 ", smart=" + smart +
                 '}';
     }

@@ -1,19 +1,18 @@
 package org.lessons.java.shop;
 
-public class Cuffie extends Prodotto{
-    //ATTRIBUTI
+import java.math.BigDecimal;
+
+public class Cuffie extends Prodotto {
+
     private String colore;
     private boolean wireless;
 
-    //COSTRUTTORE
-
-    public Cuffie(int codice, String nome, String descrizione, int prezzo, double iva, String colore, boolean wireless) {
-        super(codice, nome, descrizione, prezzo, iva);
+    public Cuffie(String nome, String descrizione, BigDecimal prezzo,
+                  BigDecimal iva, String colore, boolean wireless) {
+        super(nome, descrizione, prezzo, iva);
         this.colore = colore;
         this.wireless = wireless;
     }
-
-    //GETTER E SETTER
 
     public String getColore() {
         return colore;
@@ -31,11 +30,19 @@ public class Cuffie extends Prodotto{
         this.wireless = wireless;
     }
 
-    //METODI
+    @Override
+    public BigDecimal getPrezzoScontato(boolean ivato) {
+        BigDecimal prezzoDaScontare = ivato ? getPrezzoIvato() : getPrezzo();
+        if (!wireless) {
+            return prezzoDaScontare.subtract(prezzoDaScontare.multiply(new BigDecimal("0.07")));
+        }
+        return super.getPrezzoScontato(ivato);
+    }
 
     @Override
     public String toString() {
         return "Cuffie{" +
+                super.toString() + '\'' +
                 "colore='" + colore + '\'' +
                 ", wireless=" + wireless +
                 '}';

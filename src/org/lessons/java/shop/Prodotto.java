@@ -6,17 +6,19 @@ import java.util.Random;
 
 public class Prodotto {
 
-    //ATTRIBUTI
+    // ATTRIBUTI
     private int codice;
     private String nome;
     private String descrizione;
-    private int prezzo;
-    private double iva;
+    private BigDecimal prezzo;
+    private BigDecimal iva;
 
-    //COSTRUTTORE
+    // COSTRUTTORI
+    public Prodotto() {
+        codice = generaCodice();
+    }
 
-
-    public Prodotto(int codice, String nome, String descrizione, int prezzo, double iva) {
+    public Prodotto(String nome, String descrizione, BigDecimal prezzo, BigDecimal iva) {
         codice = generaCodice();
         this.nome = nome;
         this.descrizione = descrizione;
@@ -24,16 +26,12 @@ public class Prodotto {
         this.iva = iva;
     }
 
-    public Prodotto() {
-        codice = generaCodice();
-    }
+    // METODI
 
-    // GETTER E SETTER
-
+    // GETTER e SETTER
     public int getCodice() {
-        return generaCodice();
+        return codice;
     }
-
 
     public String getNome() {
         return nome;
@@ -51,43 +49,60 @@ public class Prodotto {
         this.descrizione = descrizione;
     }
 
-    public int getPrezzo() {
+    public BigDecimal getPrezzo() {
         return prezzo;
     }
 
-    public void setPrezzo(int prezzo) {
+    public void setPrezzo(BigDecimal prezzo) {
         this.prezzo = prezzo;
     }
 
-    public double getIva() {
+    public BigDecimal getIva() {
         return iva;
     }
 
-    public void setIva(double iva) {
+    public void setIva(BigDecimal iva) {
         this.iva = iva;
     }
 
-    //METODI
+    public BigDecimal getPrezzoIvato() {
+        // prezzo + prezzo * iva
+        BigDecimal ivaSulPrezzo = prezzo.multiply(iva);
+        return prezzo.add(ivaSulPrezzo).setScale(2, RoundingMode.HALF_EVEN);
+    }
 
+    public BigDecimal getPrezzoScontato(boolean ivato) {
+        BigDecimal prezzoDaScontare = ivato ? getPrezzoIvato() : prezzo;
+        return prezzoDaScontare.subtract(prezzoDaScontare.multiply(new BigDecimal("0.02")));
+    }
 
-
+    public String getNomeEsteso() {
+        return getCodiceFormattato() + "-" + nome;
+    }
 
     private int generaCodice() {
         Random random = new Random();
         return random.nextInt(1, 10000);
     }
 
-
-
+    public String getCodiceFormattato() {
+        // tratto il numero come stringa
+        // continuo ad aggiungere 0 in testa alla stringa fino a che la stringa è lunga 8
+        String codiceString = String.valueOf(codice);
+        while (codiceString.length() < 8) {
+            codiceString = "0" + codiceString;
+        }
+        return codiceString;
+    }
 
     @Override
     public String toString() {
-        return "Prodotto{" +
-                "codice=" + codice +
-                ", nome='" + nome + '\'' +
-                ", descrizione='" + descrizione + '\'' +
-                ", prezzo=" + prezzo +
-                ", iva=" + iva +
-                '}';
+        return
+                "codice=" + getCodiceFormattato() +
+                        ", nome='" + nome + '\'' +
+                        ", descrizione='" + descrizione + '\'' +
+                        ", prezzo=" + prezzo +
+                        ", iva=" + iva +
+                        ", prezzo con iva=" + getPrezzoIvato();
     }
 }
